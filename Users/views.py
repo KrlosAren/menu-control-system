@@ -9,11 +9,11 @@ from .forms import GuestForm, SignupForm
 
 
 @login_required(login_url='login_view')
-def home(request):
+def admin_home(request):
 
     context = {}
 
-    return render(request, 'admin/index.html', context=context)
+    return render(request, 'admin-home/index.html', context=context)
 
 
 def login_view(request):
@@ -29,7 +29,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('home')
+            return redirect('admin_home')
         else:
             context['error'] = 'Invalid username and password'
             return render(request, 'users/login.html', context)

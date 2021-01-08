@@ -9,9 +9,11 @@
 
 
 
-<form action="" method="post">
+<form action="{% url 'menu_register_view' %}" method="post">
 
   {% csrf_token %}
+
+  <p>{{errors}}</p>
 
   {{form.as_p}}
 
