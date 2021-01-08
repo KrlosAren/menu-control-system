@@ -1,0 +1,21 @@
+<h1>order register</h1>
+{% if guest_user %}
+<h4>Hola: {{guest_user}}</h4>
+{% else %}
+<h4>Comencemos</h4>
+
+{% endif %}
+
+<form action="{% url 'order_save' %}" method="post">
+{% csrf_token %}
+
+{% if guest_user %}
+{{order_form.as_p}}
+{% else %}
+{{guest_form.as_p}}
+{{order_form.as_p}}
+{% endif %}
+
+<button type="submit">Pedir</button>
+
+</form>

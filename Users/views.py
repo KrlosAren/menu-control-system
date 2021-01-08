@@ -5,18 +5,24 @@ from django.contrib.auth.decorators import login_required
 
 
 # Forms.
-from .forms import SignupForm
+from .forms import GuestForm, SignupForm
 
 
+@login_required(login_url='login_view')
 def home(request):
 
     context = {}
 
-    return render(request, 'index.html', context=context)
+    return render(request, 'admin/index.html', context=context)
 
 
 def login_view(request):
     """Login view."""
+
+    context = {
+        'title': 'Login User'
+    }
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -25,33 +31,48 @@ def login_view(request):
             login(request, user)
             return redirect('home')
         else:
-            return render(request, 'users/login.html', {'error': 'Invalid username and password'})
+            context['error'] = 'Invalid username and password'
+            return render(request, 'users/login.html', context)
 
-    return render(request, 'users/login.html')
+    return render(request, 'users/login.html', context=context)
 
 
 def register_view(request):
+    form = SignupForm()
     context = {
-        'title': 'Register'
+        'title': 'Register',
+        'form': form
     }
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect('login_view')
 
     return render(request, 'users/register.html', context=context)
 
 
-@login_required
+@login_required(login_url='login_view')
 def logout_view(request):
     """Logout a user."""
     logout(request)
-    return redirect('users:login')
+    return redirect('login_view')
 
 
 def guest_login(request):
 
+    context = {
+        'title': 'Order Form'
+    }
+
     if request.method == 'POST':
-        
+        form = GuestForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            email = data['email']
+            name = data['first_name']
+        else:
+            form = GuestForm()
+
+    return render(request)

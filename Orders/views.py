@@ -1,4 +1,7 @@
 # Django.
+from django.contrib.auth import authenticate
+from django.http import request
+from Orders.forms import OrderRegisterForm
 from Users.forms import GuestForm
 from django.shortcuts import redirect, render
 
@@ -8,9 +11,10 @@ from .models import GuestUser
 # Forms
 
 
-def order_register(request, uuid):
+# def order_register(request, uuid):
+def order_register(request):
 
-    form = order_form()
+    form = OrderRegisterForm()
 
     context = {
         'title': 'Register Order',
@@ -20,55 +24,38 @@ def order_register(request, uuid):
 
     if 'email' in request.session:
 
-        guest_user = GuestUser.objects.filter(email=request.session['email'])
-        if guest_user:
+        email = request.session['email']
+
+        is_guest_user = GuestUser.objects.filter(email=email).exists()
+        if is_guest_user:
+            guest_user = authenticate(email=email)
             context['guest_name'] = guest_user['first_name']
-            return render(request, 'order/register_order.html', context=context)
+            return render(request, 'orders/order_register.html', context=context)
         else:
-            return render(request, 'order/register_order.html', context=context)
+            order_form = OrderRegisterForm()
+            context['order_form'] = order_form
+            return render(request, 'orders/order_register.html', context=context)
+    else:
+        order_form = OrderRegisterForm()
+        guest_form = GuestForm()
+        context['guest_form'] = guest_form
+        context['order_form'] = order_form
+        return render(request, 'orders/order_register.html', context=context)
+
+
+def order_save(request):
+
+    context = {
+        'title': 'Successfully'
+    }
 
     if request.method == 'POST':
-        form = GuestForm(request.POST)
 
-        if form.is_valid():
-            data = form.cleaned_data
+        guest_form = GuestForm(request.POST)
+        order_form = OrderRegisterForm(request.POST)
+        if guest_form.is_valid():
+            data = guest_form.cleaned_data
             email = data['email']
             first_name = data['first_name']
 
-    return render(request, 'order/order_register.html', context=context)
-
-
-def order_post(request):
-
-    if request.method == 'POST':
-        import pdb
-        pdb.set_trace()
-        # is_email = request.session['email']
-        # is_email = email_exists(request.POST['email'])
-        # customer_user = CustomerUser(is_email, request.POST)
-
-        # if is_email[0]:
-        # pass
-        # customer_user.cookie_session_set(request=request)
-        # customer_user.user_login()
-        # customer_user.register_order(request.POST)
-
-        # else:
-        # customer_user.register_order(request.POST)
-        # customer_user.user_login()
-        # customer_user.cookie_session_set(request=request)
-        # return HttpResponse('registrado')
-
-    return HttpResponse('su pedido fue agendado')
-
-
-def order_and_save_user(request):
-
-    new_user = CustomerUser(request.POST['email'], request.POST)
-
-    new_user.cookie_session_set(request)
-    new_user.user_login()
-
-    new_user.register_order(order=request)
-
-    return HttpResponse('tu pedido ha sido enviado')
+    return render(request, 'order/successfully.html', context=context)

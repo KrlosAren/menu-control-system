@@ -1,12 +1,28 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>{{title}}</title>
+{% endblock%}
+
+{% block container %}
 <h1>login</h1>
 
 
-<form action="" method="post">
+<form action="{% url 'login_view' %}" method="post">
 
-{% csrf_token %}
+  {% csrf_token %}
 
-{{form.as_p}}
+  <div>
+    <label for="username">Username</label>
+    <input type="text" name="username" id="">
+  </div>
 
-<button type="submit">Login</button>
+  <div>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="">
+  </div>
+
+  <button type="submit">Login</button>
 
 </form>
+{% endblock%}

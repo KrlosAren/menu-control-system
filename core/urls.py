@@ -22,6 +22,10 @@ urlpatterns = [
 
     path('', home, name='home'),
 
+    # Users Urls
+    path('users/', include('Users.urls')),
 
-    path('users/', include('Users.urls'))
+    # Orders Urls
+    path('orders/', include('Orders.urls')),
+
 ]

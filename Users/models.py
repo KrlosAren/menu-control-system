@@ -9,6 +9,6 @@ class GuestUser(models.Model):
   first_name = models.CharField(max_length=50, blank=False)
 
   created_at = models.DateTimeField(auto_now_add=True)
-  updated_at = models.DateTimeField(auto_now=True)
+  last_login = models.DateTimeField(auto_now=True)
 
   
