@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'Users',
 
     # Order
-    'Orders'
+    'Orders',
+
+    # Order
+    'Menus'
 ]
 
 MIDDLEWARE = [

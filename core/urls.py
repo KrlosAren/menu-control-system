@@ -28,4 +28,7 @@ urlpatterns = [
     # Orders Urls
     path('orders/', include('Orders.urls')),
 
+    # Menu Urls
+    path('menu/', include('Menus.urls')),
+
 ]
