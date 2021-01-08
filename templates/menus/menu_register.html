@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>{{title}}</title>
+{% endblock%}
+
+{% block container %}
+
+<h1>create menu</h1>
+{% if f.error %}
+{% for error in f.error %}
+<p class="alert alert-danger">{{ error }}</p>
+{% endfor %}
+{% endif %}
+<form action="{% url 'menu_register_view' %}" method="post">
+
+{% csrf_token %}
+
+<input type="date" name="date" autofocus required='true'>
+
+<div>
+<label for="menu_1">Menu 1 :</label>
+<input type="text" name="option_1" required='true'>
+</div>
+
+<div>
+<label for="menu_1">Menu 2 :</label>
+<input type="text" name="option_2" required='true'>
+</div>
+
+<div>
+<label for="menu_1">Menu 3 :</label>
+<input type="text" name="option_3" required='true'>
+</div>
+
+<div>
+<label for="menu_1">Menu 4 :</label>
+<input type="text" name="option_4" required='true'>
+</div>
+
+
+<button type="submit">Registrar Menu</button>
+
+</form>
+{% endblock%}

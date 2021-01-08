@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+
+{% block container %}
+{% load humanize %}
+<p class='fs-3'>Menu para el dia : <b>{{menu.date | naturalday }}</b></p> 
+
+<div class="row mt-5">
+  <div class="col-6">
+<div class="card p-4">
+    <form action="/menu/update/{{menu.uuid}}" method='POST'>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" name="date"  class="form-control" autofocus value='{{menu.date | date:'Y-m-d' }}'>
+      </div>
+      <div class="mb-3">
+        <label for="option_1" class="form-label">Option 1</label>
+        <input type="text" name="option_1"  class="form-control" value='{{menu.option_1}}'>
+      </div>
+      <div class="mb-3">
+        <label for="option_2" class="form-label">Option 2</label>
+        <input type="text" name="option_2"  class="form-control" value='{{menu.option_2}}'>
+      </div>
+      <div class="mb-3">
+        <label for="option_3" class="form-label">Option 3</label>
+        <input type="text" name="option_3"  class="form-control" value='{{menu.option_3}}'>
+      </div>
+      <div class="mb-3">
+        <label for="option_4" class="form-label">Option 4</label>
+        <input type="text" name="option_4"  class="form-control" value='{{menu.option_4}}'>
+      </div>
+
+      <div class="">
+      <button type="submit" class='btn btn-primary mb-3'>Send</button>
+      </div>
+
+    </form>
+</div>
+  </div>
+</div>
+{% endblock  %}
