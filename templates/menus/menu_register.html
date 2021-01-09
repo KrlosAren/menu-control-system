@@ -6,40 +6,39 @@
 
 {% block container %}
 
-<h1>create menu</h1>
-{% if f.error %}
-{% for error in f.error %}
-<p class="alert alert-danger">{{ error }}</p>
-{% endfor %}
-{% endif %}
-<form action="{% url 'menu_register_view' %}" method="post">
+<div class="row mt-5">
+  <div class="col-6">
+<div class="card p-4">
+    <form action="{% url 'menu_register_view' %}" method='POST'>
+      {% csrf_token %}
 
-{% csrf_token %}
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" name="date"  class="form-control" autofocus value='{{ today | date:'Y-m-d' }}'>
+      </div>
+      <div class="mb-3">
+        <label for="option_1" class="form-label">Option 1</label>
+        <input type="text" name="option_1"  class="form-control" placeholder='Menu Description'>
+      </div>
+      <div class="mb-3">
+        <label for="option_2" class="form-label">Option 2</label>
+        <input type="text" name="option_2"  class="form-control" placeholder='Menu Description'>
+      </div>
+      <div class="mb-3">
+        <label for="option_3" class="form-label">Option 3</label>
+        <input type="text" name="option_3"  class="form-control" placeholder='Menu Description'>
+      </div>
+      <div class="mb-3">
+        <label for="option_4" class="form-label">Option 4</label>
+        <input type="text" name="option_4"  class="form-control" placeholder='Menu Description'>
+      </div>
 
-<input type="date" name="date" autofocus required='true'>
+      <div class="">
+      <button type="submit" class='btn btn-primary mb-3'>Send</button>
+      </div>
 
-<div>
-<label for="menu_1">Menu 1 :</label>
-<input type="text" name="option_1" required='true'>
+    </form>
 </div>
-
-<div>
-<label for="menu_1">Menu 2 :</label>
-<input type="text" name="option_2" required='true'>
+  </div>
 </div>
-
-<div>
-<label for="menu_1">Menu 3 :</label>
-<input type="text" name="option_3" required='true'>
-</div>
-
-<div>
-<label for="menu_1">Menu 4 :</label>
-<input type="text" name="option_4" required='true'>
-</div>
-
-
-<button type="submit">Registrar Menu</button>
-
-</form>
-{% endblock%}
+{% endblock  %}

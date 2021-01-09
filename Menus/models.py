@@ -32,13 +32,3 @@ class Menu(models.Model):
     def __str__(self):
         date = humanize.naturaldate(self.date)
         return date
-
-    def update_menu(self, data, admin_user, uuid):
-        import pdb; pdb.set_trace()
-        self.date = data['date']
-        self.option_1 = data['option_1']
-        self.option_2 = data['option_2']
-        self.option_3 = data['option_3']
-        self.option_4 = data['option_4']
-        self.admin_user = admin_user
-        self.save()

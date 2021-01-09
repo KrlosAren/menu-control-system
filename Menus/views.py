@@ -6,18 +6,22 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
+# Others
+
 # Menu Model
 from .models import Menu
 
 
 @login_required(login_url='login_view')
 def menu_register(request):
+    import datetime
 
     form = MenuRegister()
-
+    today = datetime.datetime.today()
     context = {
         'title': 'Menu Register',
-        'form': form
+        'form': form,
+        'today': today
     }
 
     if request.method == 'POST':
@@ -59,7 +63,7 @@ def menu_update(request, uuid):
 
     context = {
         'title': 'Update Menu',
-        'menu': menu.values()[0]
+        'menu': menu.values()[0],
     }
 
     if request.method == 'POST':
@@ -67,9 +71,7 @@ def menu_update(request, uuid):
         form = MenuRegister(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            admin_user = request.user
 
-            # menu = Menu().update_menu(data=data, admin_user=admin_user)
             menu = Menu.objects.get(uuid=uuid)
             menu.date = data['date']
             menu.option_1 = data['option_1']
