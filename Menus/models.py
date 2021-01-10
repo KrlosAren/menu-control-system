@@ -32,3 +32,7 @@ class Menu(models.Model):
     def __str__(self):
         date = humanize.naturaldate(self.date)
         return date
+
+    @classmethod
+    def filter_menu(self, uuid):
+        return self.objects.filter(uuid=uuid)

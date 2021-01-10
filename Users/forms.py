@@ -1,9 +1,7 @@
 """User forms."""
 
 # Django
-from django.contrib.auth import authenticate
 from django.forms.widgets import PasswordInput
-from Users.models import GuestUser
 from django import forms
 
 # Models
@@ -17,12 +15,6 @@ class LoginForm(forms.Form):
 
     username = forms.CharField(min_length=2, max_length=50)
     password = forms.CharField(min_length=5, widget=PasswordInput)
-
-    def clean_password(self):
-        """
-        verificar password en la base de datos
-        """
-        
 
 
 class SignupForm(forms.Form):
@@ -72,33 +64,5 @@ class SignupForm(forms.Form):
         """Create user."""
         data = self.cleaned_data
         data.pop('password_confirmation')
-
         User.objects.create_user(**data)
 
-
-class GuestForm(forms.Form):
-    """Guest Form
-
-    Form para registrar a los usuarios que solicitan el menu 
-    y asociarlos a su correo
-    """
-
-    email = forms.EmailField(required=True, min_length=5, max_length=50)
-    first_name = forms.CharField(required=True, min_length=2, max_length=50)
-
-    def clean_email(self):
-        """
-        confirmar que el correo ya esta registrado,
-        si lo estas devolver el user
-        """
-
-        email = self.cleaned_data['email']
-        email_taken = GuestUser.objects.filter(email=email).exists()
-        if email_taken:
-            guest_user = authenticate(email=email)
-        else:
-            guest_user = GuestUser.objects.create(email=email)
-        return email
-
-    def clean(self):
-        super().clean()

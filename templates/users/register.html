@@ -7,9 +7,14 @@
 {% block container %}
 <h1>register</h1>
 
+{% if form.errors %}
+{% for error in errors  %}
+    <div class="valid-feedback">{{error}}</div>
+{% endfor %}
+{% endif %}
 
 
-<form action="{% url 'menu_register_view' %}" method="post">
+<form action="{% url 'register_view' %}" method="post">
 
   {% csrf_token %}
 

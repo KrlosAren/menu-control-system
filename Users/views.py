@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 
 # Forms.
-from .forms import GuestForm, SignupForm
+from .forms import SignupForm
 
 
 @login_required(login_url='login_view')
@@ -38,19 +38,18 @@ def login_view(request):
 
 
 def register_view(request):
-    form = SignupForm()
-    context = {
-        'title': 'Register',
-        'form': form
-    }
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login_view')
+    else:
+        form = SignupForm()
 
-    return render(request, 'users/register.html', context=context)
+    return render(request, 'users/register.html', context={
+        'form': form,
+        'title': 'Register',
+    })
 
 
 @login_required(login_url='login_view')
@@ -60,19 +59,3 @@ def logout_view(request):
     return redirect('login_view')
 
 
-def guest_login(request):
-
-    context = {
-        'title': 'Order Form'
-    }
-
-    if request.method == 'POST':
-        form = GuestForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            email = data['email']
-            name = data['first_name']
-        else:
-            form = GuestForm()
-
-    return render(request)

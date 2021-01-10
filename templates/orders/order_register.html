@@ -1,21 +1,61 @@
-<h1>order register</h1>
-{% if guest_user %}
-<h4>Hola: {{guest_user}}</h4>
+{% extends 'base_user.html' %}
+
+{% block head_content %}
+<title>{{title}}</title>
+{% endblock%}
+
+{% block container %}
+<h1 class="h-1 my-4">Ordenar</h1>
+{% if user %}
+<p class='fs-5'>Hola {{ user | capfirst }}</p>
 {% else %}
-<h4>Comencemos</h4>
+<h4 class="fs-5">Comencemos :</h4>
 
 {% endif %}
+<div class="card p-4">
 
-<form action="{% url 'order_save' %}" method="post">
-{% csrf_token %}
+  <form action="/orders/save/{{uuid}}" method="post">
+    {% csrf_token %}
 
-{% if guest_user %}
-{{order_form.as_p}}
-{% else %}
-{{guest_form.as_p}}
-{{order_form.as_p}}
-{% endif %}
+    {% if user == None %}
+    <div class="mb-3">
+      <div class="invalid-feedback">
+        {{ form.non_field_errors }}
+      </div>
+      <label for="{{ form.email.id_for_label }}">Email</label>
+      {{ form.email }}
+    </div>
 
-<button type="submit">Pedir</button>
+    <div class="mb-3">
+      <div class="invalid-feedback">
+        {{ form.non_field_errors }}
+      </div>
+      <label for="{{ form.first_name.id_for_label }}">Name</label>
+      {{ form.first_name }}
+    </div>
+
+    {% endif %}
+
+    <div class="mb-3">
+      <div class="invalid-feedback">
+        {{ form.non_field_errors }}
+      </div>
+      <label for="{{ form.menu_option.id_for_label }}">Menu Option</label>
+      {{ form.menu_option }}
+    </div>
+
+    <div class="mb-3">
+      <div class="invalid-feedback">
+        {{ form.non_field_errors }}
+      </div>
+      <label for="{{ form.description_order.id_for_label }}">Description Order</label>
+      {{ form.description_order}}
+    </div>
+
+    <div class="mb-3 d-grid gap-2 d-md-flex justify-content-md-end">
+      <button type="submit" class="btn btn-primary">Order</button>
+    </div>
+</div>
 
 </form>
+{% endblock %}

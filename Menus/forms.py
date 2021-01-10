@@ -1,13 +1,8 @@
 """Menu forms."""
 
 # Django
-from django.contrib.auth import authenticate
-from django.forms.widgets import PasswordInput
-from Users.models import GuestUser
 from django import forms
 
-# uuid
-import uuid
 
 
 class MenuRegister(forms.Form):

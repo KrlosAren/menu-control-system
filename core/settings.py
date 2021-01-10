@@ -13,8 +13,16 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+# envioron
+import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# Enviorement configuration
+env = environ.Env()
+environ.Env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,6 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # celery
+    'django_celery_results',
+
     # humanize
     'django.contrib.humanize',
 
@@ -52,7 +63,8 @@ INSTALLED_APPS = [
     'Orders',
 
     # Order
-    'Menus'
+    'Menus',
+
 ]
 
 MIDDLEWARE = [
@@ -147,7 +159,26 @@ STATICFILES_FINDERS = [
 LOGIN_URL = '/users/login/'
 
 
-# backends para los guest_user
-# AUTHENTICATION_BACKENDS = [
-#     'Users.backends.GuestBackend'
-# ]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'Users.backends.CustomBackend'
+]
+
+
+# django setting.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+
+
+# Celery Config
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
+# slack
+SLACK_API_TOKEN = env('SLACK_API_TOKEN')
+SLACK_CHANNEL = env('SLACK_CHANNEL')

@@ -1,15 +1,25 @@
 # Django
 import pdb
+from django.contrib.messages.api import debug, get_messages
+from django.core.checks.messages import Error
+from django.db.models.query import prefetch_related_objects
+from django.forms.utils import ErrorList
 from django.http.response import Http404, HttpResponse
-from Menus.forms import MenuRegister
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.contrib import messages
 
-# Others
+# forms
+from Menus.forms import MenuRegister
 
 # Menu Model
 from .models import Menu
+
+# tasks
+from .tasks import slack_msg
+
+# celery
+from celery.result import AsyncResult
 
 
 @login_required(login_url='login_view')
@@ -26,8 +36,6 @@ def menu_register(request):
 
     if request.method == 'POST':
         form = MenuRegister(request.POST)
-        import pdb
-        pdb.set_trace()
         if form.is_valid():
             data = form.cleaned_data
 
@@ -106,6 +114,18 @@ def menu_list(request):
 
     context = {
         'title': 'Menu List',
-        'menus': menus
+        'menus': menus,
+        'messages': get_messages(request)
     }
     return render(request, 'menus/menu_list.html', context=context)
+
+
+@login_required(login_url='login_view')
+def menu_send(request, uuid):
+
+    if request.method == 'POST':
+        menu = Menu.objects.get(uuid=uuid)
+        response = slack_msg.delay(
+            menu.uuid, request.META.get('HTTP_HOST'))
+
+    return redirect('menu_list_view')

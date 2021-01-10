@@ -13,6 +13,6 @@ from django.urls import path
 from .views import order_register, order_save
 
 urlpatterns = [
-    path('register/', order_register, name='order_register_view'),
-    path('save/', order_save, name='order_save'),
+    path('menu/<uuid>', order_register, name='order_register_view'),
+    path('save/<uuid>', order_save, name='order_save'),
 ]

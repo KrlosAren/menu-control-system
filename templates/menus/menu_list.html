@@ -11,6 +11,15 @@
   Lista de Menus
 </h4>
 
+
+{% if messages %}
+{% for message in  messages %}
+  <div class="alert alert-primary" role="alert">
+  {{message}}
+</div>
+{% endfor %}
+{% endif %}
+
 {% if menus %}
 <div class="row">
   {% for menu in menus %}
@@ -50,9 +59,13 @@
           {% csrf_token %}
           <button type="submit" class="btn btn-danger  btn-sm">Delete</button>
         </form>
-        <form action="/menu/notify/{{menu.uuid}}" method="POST" class='d-inline float-end'>
+        <form action="/menu/send/{{menu.uuid}}" method="POST" class='d-inline float-end'>
           {% csrf_token %}
-          <button type="submit" class="btn btn-primary  btn-sm">Notify</button>
+          {% if menu.send %}
+          <button type="submit" class="btn btn-secondary  btn-sm" disabled>Has been Send</button>
+          {% else %}
+          <button type="submit" class="btn btn-primary btn-sm">Send</button>
+          {% endif %}
         </form>
       </div>
     </div>

@@ -1,17 +1,30 @@
-from Users.models import GuestUser
-from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-from django.core.exceptions import MultipleObjectsReturned
-from django.db.models import Q
+
+# Django
+from django.conf import settings
+from django.contrib.auth.backends import BaseBackend
+
+# models
+from .models import GuestUser
 
 
-class GuestBackend(ModelBackend):
-    def authenticate(self, request, username=None, **kwargs):
+class CustomBackend(BaseBackend):
+    """
+    Authentication system with only email to register an order for 
+    GuestUser
+    """
+
+    def authenticate(self, request, email=None):
+        if email is not None:
+            try:
+                user = GuestUser.objects.get(email=email)
+                return user
+            except GuestUser.DoesNotExist:
+                raise 'El usuario no existe'
+        return email
+
+    def get_user(self, email):
         try:
-            guest_user = GuestUser.objects.filter(email=username)
-        except MultipleObjectsReturned:
-            return GuestUser.objects.get(email=username)
-        else:
-            if self.user_can_authenticate(guest_user):
-                return guest_user
+            user = GuestUser.objects.get(email=email)
+            return {'email': user.email, 'id': user.id}
+        except GuestUser.DoesNotExist:
+            return None
