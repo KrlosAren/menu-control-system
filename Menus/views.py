@@ -8,9 +8,10 @@ from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import IntegrityError
 
 # forms
-from Menus.forms import MenuRegister
+from Menus.forms import MenuRegister, MenuUpdate
 
 # Menu Model
 from .models import Menu
@@ -38,26 +39,11 @@ def menu_register(request):
         form = MenuRegister(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-
-            date = data['date']
-            option_1 = data['option_1']
-            option_2 = data['option_2']
-            option_3 = data['option_3']
-            option_4 = data['option_4']
-            admin_user = request.user
-
-            menu = Menu()
-            menu.date = date
-            menu.option_1 = option_1
-            menu.option_2 = option_2
-            menu.option_3 = option_3
-            menu.option_4 = option_4
-            menu.admin_user = admin_user
-            menu.save()
-            if menu:
+            try:
+                Menu().menu_register(data=data, admin_user=request.user)
                 return redirect('menu_list_view')
-            else:
-                context['errors'] = 'El menu ya ha sido creado'
+            except IntegrityError as e:
+                context['error'] = 'Ya tienes un menu para ese dia.'
                 return render(request, 'menus/menu_register.html', context=context)
         else:
             form = MenuRegister()
@@ -67,7 +53,7 @@ def menu_register(request):
 
 @login_required(login_url='login_view')
 def menu_update(request, uuid):
-    menu = Menu.objects.filter(uuid=uuid)
+    menu = Menu().filter_menu(uuid=uuid)
 
     context = {
         'title': 'Update Menu',
@@ -76,17 +62,10 @@ def menu_update(request, uuid):
 
     if request.method == 'POST':
 
-        form = MenuRegister(request.POST)
+        form = MenuUpdate(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-
-            menu = Menu.objects.get(uuid=uuid)
-            menu.date = data['date']
-            menu.option_1 = data['option_1']
-            menu.option_2 = data['option_2']
-            menu.option_3 = data['option_3']
-            menu.option_4 = data['option_4']
-            menu.save()
+            menu = Menu().update(data=data, uuid=uuid)
 
             return redirect('menu_list_view')
 
@@ -97,7 +76,7 @@ def menu_update(request, uuid):
 def menu_delete(request, uuid):
 
     if request.method == 'POST':
-        menu = Menu.objects.filter(uuid=uuid)
+        menu = Menu().filter_menu(uuid=uuid)
 
         if menu:
             menu.delete()
@@ -110,7 +89,7 @@ def menu_delete(request, uuid):
 @login_required(login_url='login_view')
 def menu_list(request):
 
-    menus = Menu.objects.all().filter(admin_user_id=request.user.id).order_by('date')
+    menus = Menu().all_menus(admin_user_id=request.user.id).order_by('date')
 
     context = {
         'title': 'Menu List',
@@ -124,7 +103,9 @@ def menu_list(request):
 def menu_send(request, uuid):
 
     if request.method == 'POST':
-        menu = Menu.objects.get(uuid=uuid)
+        menu = Menu().filter_menu(uuid=uuid)
+        menu.send = True
+        menu.save()
         response = slack_msg.delay(
             menu.uuid, request.META.get('HTTP_HOST'))
 

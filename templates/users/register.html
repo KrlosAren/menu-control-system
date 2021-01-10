@@ -5,24 +5,47 @@
 {% endblock%}
 
 {% block container %}
-<h1>register</h1>
 
-{% if form.errors %}
-{% for error in errors  %}
-    <div class="valid-feedback">{{error}}</div>
-{% endfor %}
-{% endif %}
+<div class="row">
+  <div class="col-md-4 mx-auto">
+    <div class="card">
+      <div class="card-header fs-4 text-center">
+        Account Register
+      </div>
+      <div class="card-body">
+        {% if form.errors %}
+          <p>{{form.errors}}</p>
+        {% endif %}
+        <form action="{% url 'register_view' %}" method="POST">
+          {% csrf_token %}
+          <div class="form-group my-3 ">
+            <input type="text" class="form-control" name="username" placeholder="Username">
+          </div>
+          <div class="form-group my-3 ">
+            <input type="text" class="form-control" name="first_name" placeholder="Firstname">
+          </div>
+          <div class="form-group my-3 ">
+            <input type="text" class="form-control" name="last_name" placeholder="Lastname">
+          </div>
+          <div class="form-group my-3">
+            <input type="email" class="form-control" name="email" placeholder="Email">
+          </div>
+          <div class="form-group my-3">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+          </div>
+          <div class="form-group my-3">
+            <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
+          </div>
+          <div class='d-grid gap-2'>
+            <button type='submit' class="btn btn-primary btn-block">
+              Signup
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-<form action="{% url 'register_view' %}" method="post">
-
-  {% csrf_token %}
-
-  <p>{{errors}}</p>
-
-  {{form.as_p}}
-
-  <button type="submit">Registrar</button>
-
-</form>
 {% endblock%}

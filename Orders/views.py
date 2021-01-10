@@ -1,6 +1,7 @@
 # Django.
+from Orders.utils import order_user_form
 from Menus.models import Menu
-from Orders.forms import OrderRegisterForm
+from Orders.forms import OrderRegisterForm, OrderRegisterWithUser
 from django.shortcuts import redirect, render
 
 
@@ -30,30 +31,25 @@ def order_register(request, uuid):
 
 def order_save(request, uuid):
 
-    context = {
-        'form': OrderRegisterForm()
-    }
-
     if request.method == 'POST':
 
-        form = OrderRegisterForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            email = data['email']
-            guest_user = GuestUser.get_user(email=email)
-            if guest_user:
-                order = Order()
-                menus = Order.get_all(guest_user_id=guest_user[0]['id'])
-                request.session['email'] = data['email']
-                order.register_order(guest=guest_user[0]['id'],
-                                     data=data, uuid=uuid, list_menu=menus)
+        if request.session['email'] is not None:
+            form = OrderRegisterForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                guest_user = order_user_form(
+                    data=data, request=request, uuid=uuid)
+                return render(request, 'orders/successful.html', context={'user': guest_user['first_name']})
             else:
-                guest = GuestUser()
-                order = Order()
-                guest_id = guest.create_guest_user(data=data)[0]['id']
-                menus = order.get_all(guest_user_id=guest_id)
-                order.register_order(guest=guest_id,
-                                     data=data, uuid=uuid, list_menu=menus)
+                form = OrderRegisterForm()
         else:
-            form = OrderRegisterForm()
-    return render(request, 'orders/successful.html', context=context)
+            form = OrderRegisterWithUser(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                guest_user = order_user_form(
+                    data=data, request=request, uuid=uuid)
+                return render(request, 'orders/successful.html', context={'user': guest_user['first_name']})
+            else:
+                form = OrderRegisterWithUser()
+
+    return render(request, 'orders/successful.html')

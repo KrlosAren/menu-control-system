@@ -5,24 +5,35 @@
 {% endblock%}
 
 {% block container %}
-<h1>login</h1>
 
-
-<form action="{% url 'login_view' %}" method="post">
-
-  {% csrf_token %}
-
-  <div>
-    <label for="username">Username</label>
-    <input type="text" name="username" id="">
+<div class="row">
+  <div class="col-md-4 mx-auto">
+    <div class="card">
+      <div class="card-header fs-4 text-center">
+        Account Login
+      </div>
+      <div class="card-body">
+        {% if form.errors %}
+          <p>{{form.errors}}</p>
+        {% endif %}
+        <form action="{% url 'login_view' %}" method="POST">
+          {% csrf_token %}
+          <div class="form-group my-3 ">
+            <input type="text" class="form-control" name="username" placeholder="Username">
+          </div>
+          <div class="form-group my-3">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+          </div>
+          <div class='d-grid gap-2'>
+            <button type='submit' class="btn btn-primary btn-block">
+              Signup
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="">
-  </div>
 
-  <button type="submit">Login</button>
-
-</form>
 {% endblock%}

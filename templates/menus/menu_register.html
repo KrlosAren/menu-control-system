@@ -6,8 +6,15 @@
 
 {% block container %}
 
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">{{errors}}</div>
+{% endif %}
+{% if error %}
+<div class="alert alert-danger" role="alert">{{error}}</div>
+{% endif %}
+
 <div class="row mt-5">
-  <div class="col-6">
+  <div class="col mb-4">
 <div class="card p-4">
     <form action="{% url 'menu_register_view' %}" method='POST'>
       {% csrf_token %}

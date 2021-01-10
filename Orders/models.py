@@ -32,6 +32,8 @@ class Order(models.Model):
             return True
 
     @classmethod
-    def get_all(self, guest_user_id):
+    def get_all_by_guest(self, guest_user_id):
         menus =self.objects.values('menu_id_id').all().filter(guest_user_id=guest_user_id)
         return [str(menu['menu_id_id']) for menu in menus]
+
+    

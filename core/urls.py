@@ -16,15 +16,13 @@ Including another URLconf
 # Django
 from django.urls import path, include
 from django.contrib import admin
-
-# Views
-from Users.views import admin_home
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     # admin home
-    path('', admin_home, name='admin_home'),
+    path('', RedirectView.as_view(url='/users/home/')),
 
     # Users Urls
     path('users/', include('Users.urls')),
