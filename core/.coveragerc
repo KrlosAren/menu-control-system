@@ -1,0 +1,20 @@
+[run]
+branch = False
+source =
+    Menus
+    Users
+    Orders
+omit =
+    Menus/migrations/*
+    Orders/migrations/*
+    Users/migrations/*
+    env/*
+    env*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:

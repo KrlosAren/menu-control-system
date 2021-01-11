@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>{{title}}</title>
+{% endblock%}
+
+
+{% block container %}
+
+<h1 class='h-2 my-4'>Orders List</h1>
+
+{% if orders %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User ID</th>
+      <th scope="col">Menu Day</th>
+      <th scope="col">Name</th>
+      <th scope="col">Menu Option</th>
+      <th scope="col">Description</th>
+      <th scope="col">Date and time</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for order in orders %}
+    <tr>
+      <th scope="row">{{order.id}}</th>
+      <th scope="row">{{order.date}}</th>
+      <td>{{order.name}}</td>
+      <td>{{order.menu}}</td>
+      {% if order.description %}
+        <td>{{order.description}}</td>
+        {% else %}
+        <td>********</td>
+      {% endif %}
+      <td>{{order.order_date}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="container h-100">
+    <p class='fs-3 text-center'>You don't have menu orders yet</p>
+</div>
+  </div>
+{% endif %}
+
+{% endblock  %}

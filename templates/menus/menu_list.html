@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>{{title}}</title>
+{% endblock%}
+
+{% block container %}
+{% load humanize %}
+
+<h4 class="card-header mb-4">
+  Lista de Menus
+</h4>
+
+
+{% if messages %}
+{% for message in  messages %}
+  <div class="alert alert-primary" role="alert">
+  {{message}}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if menus %}
+<div class="row">
+  {% for menu in menus %}
+
+  <div class="col-md-4 my-4">
+    <div class="card">
+      <div class="card-title card-header">
+        <h4 class="text-capitalize">
+          {{menu.date | naturalday }}
+        </h4>
+        <div class="card-title">Creado : {{menu.created_at | naturaltime }}</div>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <h6 class='card-title mt-2'>Menu 1</h6>
+          <p class='card-text'>{{menu.option_1}}</p>
+        </li>
+        <li class="list-group-item">
+          <h6 class='card-title mt-2'>Menu 2</h6>
+          <p class='card-text '>{{menu.option_2}}</p>
+        </li>
+        <li class="list-group-item">
+          <h6 class='card-title mt-2'>Menu 3</h6>
+          <p class='card-text'>{{menu.option_3}}</p>
+        </li>
+        <li class="list-group-item">
+          <h6 class='card-title mt-2'>Menu 4</h6>
+          <p class='card-text'>{{menu.option_4}}</p>
+        </li>
+      </ul>
+      <div class="card-body">
+        <form action="/menu/update/{{menu.uuid}}" method="POST" class='d-inline'>
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success  btn-sm">Update</button>
+        </form>
+        <form action="/menu/delete/{{menu.uuid}}" method="POST" class='d-inline'>
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger  btn-sm">Delete</button>
+        </form>
+        <form action="/menu/send/{{menu.uuid}}" method="POST" class='d-inline float-end'>
+          {% csrf_token %}
+          {% if menu.send %}
+          <button type="submit" class="btn btn-secondary  btn-sm" disabled>Has been Send</button>
+          {% else %}
+          <button type="submit" class="btn btn-primary btn-sm">Send</button>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="col-md-4">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title d-flex justify-content-between align-item-center ">
+        <p class='lead text-center'>Not have a menu create, please make one</p>
+      </h4>
+      <div class="d-grid gap-2">
+        <a class='btn btn-primary' href="{% url 'menu_register_view' %}">Create Menu</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+
+{% endblock%}

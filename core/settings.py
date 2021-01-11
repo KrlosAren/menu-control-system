@@ -10,10 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+# envioron
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# environment variables configuration
+env = environ.Env()
+environ.Env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,7 +33,6 @@ SECRET_KEY = 'w$ez&l7t@d+epn&eh+c7@(e5h!3k*rd@i=((*$&69*7mm@!wpb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -37,6 +45,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # celery
+    'django_celery_results',
+
+    # humanize
+    'django.contrib.humanize',
+
+    # extensions
+    'django_extensions',
+
+    # Users
+    'Users',
+
+    # Order
+    'Orders',
+
+    # Order
+    'Menus',
+
 ]
 
 MIDDLEWARE = [
@@ -120,3 +147,33 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+#   URL LOGIN 
+LOGIN_URL = '/users/login/'
+
+
+
+# django setting.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+
+
+# Celery Config
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
+# slack
+SLACK_API_TOKEN = env('SLACK_API_TOKEN')
+SLACK_CHANNEL = env('SLACK_CHANNEL')

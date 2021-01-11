@@ -1,12 +1,20 @@
 """User forms."""
 
 # Django
-from django.contrib.auth import authenticate
-from Users.models import GuestUser
+from django.forms.widgets import PasswordInput
 from django import forms
 
 # Models
 from django.contrib.auth.models import User
+
+
+class LoginForm(forms.Form):
+    """
+        Login form.
+    """
+
+    username = forms.CharField(min_length=2, max_length=50)
+    password = forms.CharField(min_length=5, widget=PasswordInput)
 
 
 class SignupForm(forms.Form):
@@ -48,7 +56,7 @@ class SignupForm(forms.Form):
         password_confirmation = data['password_confirmation']
 
         if password != password_confirmation:
-            raise forms.ValidationError('Passwords do not match.'):
+            raise forms.ValidationError('Passwords do not match.')
 
         return data
 
@@ -56,32 +64,5 @@ class SignupForm(forms.Form):
         """Create user."""
         data = self.cleaned_data
         data.pop('password_confirmation')
-
         User.objects.create_user(**data)
 
-
-class GuestForm(forms.Form):
-    """Guest Form
-
-    Form para registrar a los usuarios que solicitan el menu 
-    y asociarlos a algun correo
-    """
-
-    email = forms.EmailField(required=True, min_length=5, max_length=50)
-    first_name = forms.CharField(required=True, min_length=2, max_length=50)
-
-    def clean_email(self):
-        """
-        confirmar que el correo ya esta registrado,
-        si lo estas devolver el user
-        """
-
-        email = self.cleaned_data['email']
-        email_taken = GuestUser.objects.filter(email=email).exists()
-        if email_taken:
-            guest_user = authenticate(email=email)
-        else:
-            guest_user = GuestUser.objects.create(email=email)
-        return email
-    
-    def save()
