@@ -28,7 +28,11 @@
       <th scope="row">{{order.date}}</th>
       <td>{{order.name}}</td>
       <td>{{order.menu}}</td>
-      <td>{{order.description}}</td>
+      {% if order.description %}
+        <td>{{order.description}}</td>
+        {% else %}
+        <td>********</td>
+      {% endif %}
       <td>{{order.order_date}}</td>
     </tr>
   {% endfor %}

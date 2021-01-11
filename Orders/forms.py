@@ -13,17 +13,15 @@ else the form have a inputs form email and firstname
 class OrderRegisterWithUser(forms.Form):
 
     email = forms.EmailField(required=True, min_length=5, max_length=50, widget=forms.EmailInput(attrs={
-        'class':  'form-control', 'id':'menu_1'
+        'class':  'form-control'
     }))
     first_name = forms.CharField(required=True, min_length=2, max_length=50, widget=forms.TextInput(attrs={
-        'class':  'form-control', 'id':'menu_2'
+        'class':  'form-control'
     }))
+    menu_option = forms.IntegerField(required=True , max_value=4)
 
-    menu_option = forms.IntegerField(max_value=4, widget=NumberInput(attrs={
-        'class':  'form-control', 'id':'menu_3'
-    }))
     description_order = forms.CharField(required=False, max_length=30, widget=forms.TextInput(attrs={
-        'class':  'form-control', 'id':'menu_4'
+        'class':  'form-control'
     }))
 
 
