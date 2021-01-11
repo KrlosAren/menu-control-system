@@ -7,20 +7,21 @@ from Orders.models import Order
 from Users.models import GuestUser
 
 
-def order_user_form(data, request, uuid):
-    email = request.session['email'] if request.session['email'] else data['email']
-    guest_user = GuestUser.get_user(email=email)
-    if guest_user:
+def order_user_form(data, request, uuid, guest_email=None):
+    if guest_email:
+        guest_user = GuestUser().get_user(email=guest_email)
         order = Order()
+        request.session['email'] = guest_user[0]['email']
         menus = Order.get_all_by_guest(
             guest_user_id=guest_user[0]['id'])
         order.register_order(guest=guest_user[0]['id'],
                              data=data, uuid=uuid, list_menu=menus)
+        return {'first_name': guest_user[0]['first_name']}
     else:
-        guest = GuestUser()
+        guest = GuestUser().create_guest_user(data=data)
         order = Order()
-        guest_id = guest.create_guest_user(data=data)[0]['id']
-        menus = order.get_all_by_guest(guest_user_id=guest_id)
-        order.register_order(guest=guest_id,
+        request.session['email'] = guest[0]['email']
+        menus = order.get_all_by_guest(guest_user_id=guest[0]['id'])
+        order.register_order(guest=guest[0]['id'],
                              data=data, uuid=uuid, list_menu=menus)
-    return {'email': guest_user[0]['email'], 'first_name': guest_user[0]['first_name']}
+        return {'first_name': guest[0]['first_name']}

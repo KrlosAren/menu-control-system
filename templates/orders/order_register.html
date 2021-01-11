@@ -8,15 +8,45 @@
 <h1 class="h-1 my-4">Ordenar</h1>
 {% if user %}
 <p class='fs-5'>Hola {{ user | capfirst }}</p>
-{% else %}
-<h4 class="fs-5">Comencemos :</h4>
-
 {% endif %}
 <div class="card p-4">
 
   <form action="/orders/save/{{uuid}}" method="post">
     {% csrf_token %}
-
+    <div class="card-title">
+      Selecciona uno:
+    </div>
+    <div class="form-check my-2">
+      <input class="form-check-input" type="radio" name="menu_option" value='1'>
+      <label class="form-check-label " for="flexRadioDefault1">
+        {{menu.option_1}}
+      </label>
+    </div>
+    <div class="form-check my-2">
+      <input class="form-check-input" type="radio" name="menu_option" value='2'>
+      <label class="form-check-label " for="flexRadioDefault1">
+        {{menu.option_2}}
+      </label>
+    </div>
+    <div class="form-check my-2">
+      <input class="form-check-input" type="radio" name="menu_option" value='3'>
+      <label class="form-check-label " for="flexRadioDefault1">
+        {{menu.option_3}}
+      </label>
+    </div>
+    <div class="form-check my-2">
+      <input class="form-check-input" type="radio" name="menu_option" value='4'>
+      <label class="form-check-label " for="flexRadioDefault1">
+        {{menu.option_4}}
+      </label>
+    </div>
+    <div class="mb-3">
+      <div class="invalid-feedback">
+        {{ form.non_field_errors }}
+      </div>
+      <label for="{{ form.description_order.id_for_label }}">Description Order</label>
+      {{ form.description_order}}
+    </div>
     {% if user == None %}
     <div class="mb-3">
       <div class="invalid-feedback">
@@ -35,23 +65,6 @@
     </div>
 
     {% endif %}
-
-    <div class="mb-3">
-      <div class="invalid-feedback">
-        {{ form.non_field_errors }}
-      </div>
-      <label for="{{ form.menu_option.id_for_label }}">Menu Option</label>
-      {{ form.menu_option }}
-    </div>
-
-    <div class="mb-3">
-      <div class="invalid-feedback">
-        {{ form.non_field_errors }}
-      </div>
-      <label for="{{ form.description_order.id_for_label }}">Description Order</label>
-      {{ form.description_order}}
-    </div>
-
     <div class="mb-3 d-grid gap-2 d-md-flex justify-content-md-end">
       <button type="submit" class="btn btn-primary">Order</button>
     </div>

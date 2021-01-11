@@ -15,6 +15,16 @@ from django.db.models.deletion import CASCADE
 
 
 class Menu(models.Model):
+    """
+        Menu model:
+
+        Add some methods to make easy the query to DB
+        - filter_menu : method to filter menu by UUID
+        - menu_register : to create a menu and free the view of some data
+        - update : to update menu and free the view of some data 
+        - all_menus : retrieves all menus by admin_id and order by date
+
+    """
 
     uuid = models.UUIDField(
         default=uuid.uuid4, primary_key=True, editable=False)
@@ -50,10 +60,11 @@ class Menu(models.Model):
         menu.option_4 = data['option_4']
         menu.admin_user = admin_user
         menu.save()
+        return data
 
     @classmethod
-    def all_menus(self, admin_user_id):
-        menus = self.objects.all().filter(admin_user_id=admin_user_id).order_by('date')
+    def all_menus(self, admin_user):
+        menus = self.objects.all().filter(admin_user=admin_user).order_by('date')
         return menus
 
     @classmethod
@@ -63,5 +74,5 @@ class Menu(models.Model):
         menu.option_2 = data['option_2']
         menu.option_3 = data['option_3']
         menu.option_4 = data['option_4']
-
         menu.save()
+        return menu

@@ -20,7 +20,7 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Enviorement configuration
+# environment variables configuration
 env = environ.Env()
 environ.Env.read_env()
 
@@ -33,7 +33,6 @@ SECRET_KEY = 'w$ez&l7t@d+epn&eh+c7@(e5h!3k*rd@i=((*$&69*7mm@!wpb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -156,13 +155,9 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
+#   URL LOGIN 
 LOGIN_URL = '/users/login/'
 
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'Users.backends.CustomBackend'
-]
 
 
 # django setting.

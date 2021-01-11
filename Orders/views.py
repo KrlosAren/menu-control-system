@@ -1,4 +1,5 @@
 # Django.
+import pdb
 from Orders.utils import order_user_form
 from Menus.models import Menu
 from Orders.forms import OrderRegisterForm, OrderRegisterWithUser
@@ -11,7 +12,7 @@ from .models import GuestUser, Order
 
 def order_register(request, uuid):
 
-    form = OrderRegisterForm()
+    form = OrderRegisterWithUser()
     menu = Menu().filter_menu(uuid=uuid)
 
     context = {
@@ -21,7 +22,7 @@ def order_register(request, uuid):
         'menu': menu,
     }
     if request.session.get('email') is not None:
-        guest_user = GuestUser().get_user(request.session.get('email'))
+        guest_user = GuestUser().get_user(request.session['email'])
         context['user'] = guest_user[0]['first_name']
         return render(request, 'orders/order_register.html', context=context)
     else:
@@ -33,12 +34,12 @@ def order_save(request, uuid):
 
     if request.method == 'POST':
 
-        if request.session['email'] is not None:
+        if 'email' is request.session:
             form = OrderRegisterForm(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
                 guest_user = order_user_form(
-                    data=data, request=request, uuid=uuid)
+                    data=data, request=request, uuid=uuid, guest_email=request.session['email'])
                 return render(request, 'orders/successful.html', context={'user': guest_user['first_name']})
             else:
                 form = OrderRegisterForm()
@@ -53,3 +54,4 @@ def order_save(request, uuid):
                 form = OrderRegisterWithUser()
 
     return render(request, 'orders/successful.html')
+

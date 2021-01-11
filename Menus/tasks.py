@@ -1,9 +1,13 @@
 """
-    Celery tasks send menu message
+    Tasks for menus module
+
+    task send slack message to a specific channel
+    the variables comes from .ENV file is the core
+    configure your own variables with the slack token and channel
+
     """
 
 # celery
-from Menus.utils import jsonString
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
@@ -31,6 +35,8 @@ def slack_msg(message, url):
             channel=channel,
             text=menu_url,
         )
-        return jsonString(response)
+        return response.data
     except SlackApiError as error:
         return error
+
+

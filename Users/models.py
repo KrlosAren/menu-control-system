@@ -23,13 +23,13 @@ class GuestUser(models.Model):
         if user is not None:
             return user
         else:
-            return
+            return False
 
     @classmethod
     def create_guest_user(self, data):
         users = self.get_all()
         if data['email'] in users:
-            return
+            return self.get_user(email=data['email'])
         else:
             self.objects.create(
                 email=data['email'], first_name=data['first_name'])

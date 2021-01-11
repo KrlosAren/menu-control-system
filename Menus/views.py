@@ -1,13 +1,7 @@
 # Django
-import pdb
-from django.contrib.messages.api import debug, get_messages
-from django.core.checks.messages import Error
-from django.db.models.query import prefetch_related_objects
-from django.forms.utils import ErrorList
-from django.http.response import Http404, HttpResponse
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.db import IntegrityError
 
 # forms
@@ -21,6 +15,7 @@ from .tasks import slack_msg
 
 # celery
 from celery.result import AsyncResult
+from celery import Task
 
 
 @login_required(login_url='login_view')
@@ -89,12 +84,11 @@ def menu_delete(request, uuid):
 @login_required(login_url='login_view')
 def menu_list(request):
 
-    menus = Menu().all_menus(admin_user_id=request.user.id).order_by('date')
+    menus = Menu().all_menus(admin_user=request.user).order_by('date')
 
     context = {
         'title': 'Menu List',
         'menus': menus,
-        'messages': get_messages(request)
     }
     return render(request, 'menus/menu_list.html', context=context)
 
@@ -104,9 +98,10 @@ def menu_send(request, uuid):
 
     if request.method == 'POST':
         menu = Menu().filter_menu(uuid=uuid)
-        menu.send = True
-        menu.save()
         response = slack_msg.delay(
             menu.uuid, request.META.get('HTTP_HOST'))
-
+        menu.send = True
+        menu.save()
+        messages.add_message(request, messages.INFO,
+                             'The Menu has been send.')
     return redirect('menu_list_view')

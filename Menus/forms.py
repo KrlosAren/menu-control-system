@@ -8,7 +8,10 @@ from django import forms
 
 class MenuRegister(forms.Form):
     """
-      Form para registro del menu
+      Menu register form
+      recieves 
+      - date
+      - 4 menus options all is required
 
     """
 
@@ -21,7 +24,12 @@ class MenuRegister(forms.Form):
 
 class MenuUpdate(forms.Form):
     """
-    Updated menu form without date
+    Menu update form
+
+    recieves
+    - 4 menu options
+     
+
     """
     option_1 = forms.CharField(max_length=50, required=True)
     option_2 = forms.CharField(max_length=50, required=True)
