@@ -8,6 +8,7 @@
     """
 
 # celery
+from django.contrib import messages
 from celery import shared_task
 from celery.utils.log import get_task_logger
 
@@ -38,5 +39,4 @@ def slack_msg(message, url):
         return response.data
     except SlackApiError as error:
         return error
-
 

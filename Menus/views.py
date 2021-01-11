@@ -11,7 +11,7 @@ from Menus.forms import MenuRegister, MenuUpdate
 from .models import Menu
 
 # tasks
-from .tasks import slack_msg
+from .tasks import  slack_msg
 
 # celery
 from celery.result import AsyncResult
