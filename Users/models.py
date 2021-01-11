@@ -4,6 +4,15 @@ from django.db import models
 
 
 class GuestUser(models.Model):
+    """
+
+    GuestUser Model
+
+    this model is use to register customer in DB and associate
+    users with their orders
+
+
+    """
 
     email = models.EmailField(max_length=50, blank=False, unique=True)
     first_name = models.CharField(max_length=50, blank=False)

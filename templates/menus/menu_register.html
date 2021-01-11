@@ -6,11 +6,9 @@
 
 {% block container %}
 
-{% if form.errors %}
-<div class="alert alert-danger" role="alert">{{errors}}</div>
-{% endif %}
-{% if error %}
-<div class="alert alert-danger" role="alert">{{error}}</div>
+{% if errors %}
+<p>hay errores</p>
+<div class="alert alert-danger" role="alert">{{form.errors}}</div>
 {% endif %}
 
 <div class="row mt-5">

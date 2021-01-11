@@ -29,7 +29,7 @@ class Menu(models.Model):
     uuid = models.UUIDField(
         default=uuid.uuid4, primary_key=True, editable=False)
 
-    date = models.DateField(unique=True)
+    date = models.DateField(blank=False)
     admin_user = models.ForeignKey(User, on_delete=CASCADE)
 
     option_1 = models.CharField(max_length=50, blank=False)
@@ -51,17 +51,22 @@ class Menu(models.Model):
         return self.objects.get(uuid=uuid)
 
     @classmethod
-    def menu_register(self, data, admin_user):
-        menu = Menu()
-        menu.date = data['date']
-        menu.option_1 = data['option_1']
-        menu.option_2 = data['option_2']
-        menu.option_3 = data['option_3']
-        menu.option_4 = data['option_4']
-        menu.admin_user = admin_user
-        menu.save()
-        return data
-
+    def menu_register(self, data, admin_user, request):
+        menus = self.all_menus(request.user)
+        menus = [menu.date for menu in menus]
+        if data['date'] in menus:
+            raise Exception()
+        else:
+            menu = Menu()
+            menu.date = data['date']
+            menu.option_1 = data['option_1']
+            menu.option_2 = data['option_2']
+            menu.option_3 = data['option_3']
+            menu.option_4 = data['option_4']
+            menu.admin_user = admin_user
+            menu.save()
+            return data
+  
     @classmethod
     def all_menus(self, admin_user):
         menus = self.objects.all().filter(admin_user=admin_user).order_by('date')

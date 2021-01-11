@@ -31,7 +31,6 @@ def order_register(request, uuid):
 
 
 def order_save(request, uuid):
-
     if request.method == 'POST':
 
         if 'email' is request.session:
@@ -54,4 +53,3 @@ def order_save(request, uuid):
                 form = OrderRegisterWithUser()
 
     return render(request, 'orders/successful.html')
-

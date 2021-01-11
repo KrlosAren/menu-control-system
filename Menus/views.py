@@ -35,9 +35,10 @@ def menu_register(request):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                Menu().menu_register(data=data, admin_user=request.user)
+                Menu().menu_register(data=data, admin_user=request.user, request=request)
                 return redirect('menu_list_view')
-            except IntegrityError as e:
+            except Exception as e:
+                print(e)
                 context['error'] = 'Ya tienes un menu para ese dia.'
                 return render(request, 'menus/menu_register.html', context=context)
         else:
@@ -52,7 +53,7 @@ def menu_update(request, uuid):
 
     context = {
         'title': 'Update Menu',
-        'menu': menu.values()[0],
+        'menu': menu,
     }
 
     if request.method == 'POST':
@@ -63,6 +64,8 @@ def menu_update(request, uuid):
             menu = Menu().update(data=data, uuid=uuid)
 
             return redirect('menu_list_view')
+        else:
+            form = MenuUpdate()
 
     return render(request, 'menus/menu_update.html', context=context)
 

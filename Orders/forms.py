@@ -1,7 +1,13 @@
 # Django modules
 from django import forms
+from django.forms.widgets import NumberInput
 
-# models from meal -
+"""
+Use this forms to save customer user and order.
+If client  exists the form only have the menu and order
+else the form have a inputs form email and firstname
+
+"""
 
 
 class OrderRegisterWithUser(forms.Form):
@@ -13,7 +19,7 @@ class OrderRegisterWithUser(forms.Form):
         'class':  'form-control'
     }))
 
-    menu_option = forms.CharField(max_length=6, required=True, widget=forms.TextInput(attrs={
+    menu_option = forms.IntegerField(max_value=4, widget=NumberInput(attrs={
         'class':  'form-control'
     }))
     description_order = forms.CharField(required=False, max_length=30, widget=forms.TextInput(attrs={

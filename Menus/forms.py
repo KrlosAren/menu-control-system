@@ -1,8 +1,6 @@
 """Menu forms."""
 
 # Django
-from django.http import request
-from Menus.models import Menu
 from django import forms
 
 

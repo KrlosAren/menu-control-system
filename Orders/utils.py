@@ -1,5 +1,11 @@
 """
-      Utils form orders module
+      Utils for Order module
+
+        this function can register the customer if it is not in the database
+        if the customer is in DB save the order associated with the customer.
+        Both functions save cookies to remind the user of the email and not
+        request this information again.
+
     """
 
 

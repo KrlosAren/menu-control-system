@@ -1,10 +1,7 @@
-from django.contrib.auth import get_user
 from Menus.models import Menu
 from django.db.models.deletion import CASCADE
 from Users.models import GuestUser
 from django.db import models
-
-# Create your models here.
 
 
 class Order(models.Model):
@@ -33,15 +30,15 @@ class Order(models.Model):
     @classmethod
     def register_order(self, guest, uuid, data, list_menu):
         if uuid in list_menu:
-            return False
+            return
         else:
-            order = Order()
-            order.guest_user_id = guest
-            order.description_order = data['description_order']
-            order.menu_option = data['menu_option']
-            order.menu_id_id = uuid
-            order.save()
-            return True
+            self.objects.create(
+                guest_user_id=guest,
+                description_order=data['description_order'],
+                menu_option=data['menu_option'],
+                menu_id_id=uuid,
+            )
+            return
 
     @classmethod
     def get_all_by_guest(self, guest_user_id):
@@ -50,27 +47,32 @@ class Order(models.Model):
         return [str(menu['menu_id_id']) for menu in menus]
 
     @classmethod
-    def get_orders_by_admin_user(self,admin_id):
-        orders = self.objects.raw('''
-            SELECT 
-            m.date  AS date,
-            u.first_name AS name,
-            o.menu_option AS menu,
-            o.description_order AS description,
-            o.id AS id,
-            o.created_at AS order_date
-            FROM 
-            Menus_menu as m 
-            JOIN auth_user as ad
-            ON
-            m.admin_user_id = ad.id
-            JOIN
-            Users_guestuser as u 
-            JOIN Orders_order as o 
-            ON u.id= o.guest_user_id WHERE m.admin_user_id=%s
-            GROUP BY m.date 
-            ORDER BY o.created_at
-            ;
-        ''', [admin_id])
+    def get_orders_by_admin_user(self, admin_id):
+        orders = self.objects.raw('''SELECT
+                                    u.id,
+                                    m.date,
+                                    u.first_name as name,
+                                    o.menu_option as menu,
+                                    o.description_order as description,
+                                    o.created_at as order_date
+                                    FROM 
+                                    Orders_order AS o 
+                                    JOIN
+                                    Menus_menu AS m
+                                    ON
+                                    m.uuid = o.menu_id_id 
+                                    JOIN 
+                                    auth_user AS ad
+                                    ON 
+                                    ad.id = m.admin_user_id
+                                    JOIN 
+                                    Users_guestuser AS u
+                                    ON
+                                    u.id=o.guest_user_id
+                                    WHERE ad.id=%s
+                                    GROUP BY
+                                    m.date
+                                    ORDER BY
+                                    o.created_at
+                                            ''', [admin_id])
         return orders
-
