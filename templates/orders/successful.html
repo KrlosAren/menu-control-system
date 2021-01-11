@@ -1,0 +1,23 @@
+{% extends "base_user.html" %}
+
+{% block head_content %}
+<title>{{title}}</title>
+{% endblock%}
+
+{% block container %}
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex p-2 bd-highlight justify-content-start align-items-center">
+      <p class="h2">Gracias!.Ya agendamos tu pedido.</p>
+    </div>
+  </div>
+  <div class="row">
+  <div class="col-12">
+      <div class="d-flex p-2 bd-highlight justify-content-left   align-items-center">
+        <p class="h2 text-capitalize text-primary ">{{user }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock%}

@@ -1,4 +1,6 @@
 # Django
+import pdb
+from Orders.models import Order
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
@@ -8,50 +10,61 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignupForm
 
 
-def home(request):
+@login_required(login_url='login_view')
+def admin_home(request):
 
-    context = {}
+    orders = Order().get_orders_by_admin_user(admin_id=request.user.id)
+    context = {
+        'title': 'Orders List',
+        'orders': orders
+    }
 
-    return render(request, 'index.html', context=context)
+
+
+    return render(request, 'admin-home/index.html', context=context)
 
 
 def login_view(request):
     """Login view."""
+
+    context = {
+        'title': 'Login User'
+    }
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('home')
+            return redirect('admin_home')
         else:
-            return render(request, 'users/login.html', {'error': 'Invalid username and password'})
+            context['error'] = 'Invalid username and password'
+            return render(request, 'users/login.html', context)
 
-    return render(request, 'users/login.html')
+    return render(request, 'users/login.html', context=context)
 
 
 def register_view(request):
-    context = {
-        'title': 'Register'
-    }
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+        return redirect('login_view')
+    else:
+        form = SignupForm()
 
-    return render(request, 'users/register.html', context=context)
+    return render(request, 'users/register.html', context={
+        'form': form,
+        'title': 'Register',
+    })
 
 
-@login_required
+@login_required(login_url='login_view')
 def logout_view(request):
     """Logout a user."""
     logout(request)
-    return redirect('users:login')
+    return redirect('login_view')
 
 
-def guest_login(request):
-
-    if request.method == 'POST':
-        
